@@ -164,6 +164,12 @@ type Server struct {
 	AdminPass string `json:"adminPass"`
 	// SecurityGroups includes the security groups that this instance has applied to it
 	SecurityGroups []map[string]interface{} `json:"security_groups"`
+	// Host refers to the name of the host
+	Host string `json:"OS-EXT-SRV-ATTR:host"`
+	// HostName refers to the hypervisor host name
+	HostName string `json:"OS-EXT-SRV-ATTR:hypervisor_hostname"`
+	// Volumes attached to the server
+	Volumes []interface{} `json:"os-extended-volumes:volumes_attached"`
 }
 
 func (s *Server) UnmarshalJSON(b []byte) error {
