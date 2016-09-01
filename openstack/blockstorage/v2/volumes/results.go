@@ -55,6 +55,8 @@ type Volume struct {
 	ConsistencyGroupID string `json:"consistencygroup_id"`
 	// Multiattach denotes if the volume is multi-attach capable.
 	Multiattach bool `json:"multiattach"`
+	// VolumeImageMetadata holds map of key-value pairs describing the image associated with the volume
+	VolumeImageMetadata map[string]interface{} `json:"volume_image_metadata"`
 }
 
 // VolumePage is a pagination.pager that is returned from a call to the List function.

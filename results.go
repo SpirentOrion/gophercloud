@@ -201,6 +201,26 @@ func (r HeaderResult) ExtractInto(to interface{}) error {
 	return err
 }
 
+// RFC3339 describes a common time format used by some API responses.
+const RFC3339 = "2006-01-02T15:04:05Z"
+
+type JSONRFC3339 time.Time
+
+func (jt *JSONRFC3339) UnmarshalJSON(data []byte) error {
+	b := bytes.NewBuffer(data)
+	dec := json.NewDecoder(b)
+	var s string
+	if err := dec.Decode(&s); err != nil {
+		return err
+	}
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		return err
+	}
+	*jt = JSONRFC3339(t)
+	return nil
+}
+
 // RFC3339Milli describes a common time format used by some API responses.
 const RFC3339Milli = "2006-01-02T15:04:05.999999Z"
 

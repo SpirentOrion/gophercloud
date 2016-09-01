@@ -218,7 +218,7 @@ type ListOptsBuilder interface {
 // by a particular network attribute. SortDir sets the direction, and is either
 // `asc' or `desc'. Marker and Limit are used for pagination.
 type ListOpts struct {
-	Status  string  `q:"status"`
+	Status  string  `q:"stack_status"`
 	Name    string  `q:"name"`
 	Marker  string  `q:"marker"`
 	Limit   int     `q:"limit"`
