@@ -47,14 +47,14 @@ func (r StackPage) IsEmpty() (bool, error) {
 
 // ListedStack represents an element in the slice extracted from a List operation.
 type ListedStack struct {
-	CreationTime gophercloud.JSONRFC3339 `json:"creation_time"`
-	Description  string                  `json:"description"`
-	ID           string                  `json:"id"`
-	Links        []gophercloud.Link      `json:"links"`
-	Name         string                  `json:"stack_name"`
-	Status       string                  `json:"stack_status"`
-	StatusReason string                  `json:"stack_status_reason"`
-	Tags         []string                `json:"tags"`
+	// CreationTime gophercloud.JSONRFC3339 `json:"creation_time"`
+	Description  string             `json:"description"`
+	ID           string             `json:"id"`
+	Links        []gophercloud.Link `json:"links"`
+	Name         string             `json:"stack_name"`
+	Status       string             `json:"stack_status"`
+	StatusReason string             `json:"stack_status_reason"`
+	Tags         []string           `json:"tags"`
 	// UpdatedTime  gophercloud.JSONRFC3339NoZ `json:"updated_time"`
 }
 
