@@ -9,18 +9,18 @@ import (
 
 // Resource represents a stack resource.
 type Resource struct {
-	Attributes   map[string]interface{}     `json:"attributes"`
-	CreationTime gophercloud.JSONRFC3339NoZ `json:"creation_time"`
-	Description  string                     `json:"description"`
-	Links        []gophercloud.Link         `json:"links"`
-	LogicalID    string                     `json:"logical_resource_id"`
-	Name         string                     `json:"resource_name"`
-	PhysicalID   string                     `json:"physical_resource_id"`
-	RequiredBy   []interface{}              `json:"required_by"`
-	Status       string                     `json:"resource_status"`
-	StatusReason string                     `json:"resource_status_reason"`
-	Type         string                     `json:"resource_type"`
-	UpdatedTime  gophercloud.JSONRFC3339NoZ `json:"updated_time"`
+	Attributes map[string]interface{} `json:"attributes"`
+	// CreationTime gophercloud.JSONRFC3339NoZ `json:"creation_time"`
+	Description  string             `json:"description"`
+	Links        []gophercloud.Link `json:"links"`
+	LogicalID    string             `json:"logical_resource_id"`
+	Name         string             `json:"resource_name"`
+	PhysicalID   string             `json:"physical_resource_id"`
+	RequiredBy   []interface{}      `json:"required_by"`
+	Status       string             `json:"resource_status"`
+	StatusReason string             `json:"resource_status_reason"`
+	Type         string             `json:"resource_type"`
+	// UpdatedTime  gophercloud.JSONRFC3339NoZ `json:"updated_time"`
 }
 
 // FindResult represents the result of a Find operation.
