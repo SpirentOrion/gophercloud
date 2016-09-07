@@ -76,6 +76,22 @@ func (r CreateResult) ExtractServiceCatalog() (*ServiceCatalog, error) {
 	return &ServiceCatalog{Entries: s.Token.Entries}, err
 }
 
+// ExtractUser returns the User information that was generated along with the user's Token.
+func (r CreateResult) ExtractUser() (*User, error) {
+	var s struct {
+		Token struct {
+			User User `json:"user"`
+		} `json:"token"`
+	}
+
+	err := r.ExtractInto(&s)
+	if err != nil {
+		return nil, err
+	}
+
+	return &s.Token.User, nil
+}
+
 // CreateResult defers the interpretation of a created token.
 // Use ExtractToken() to interpret it as a Token, or ExtractServiceCatalog() to interpret it as a service catalog.
 type CreateResult struct {
@@ -106,4 +122,10 @@ type Token struct {
 	ID string `json:"id"`
 	// ExpiresAt is the timestamp at which this token will no longer be accepted.
 	ExpiresAt gophercloud.JSONRFC3339Milli `json:"expires_at"`
+}
+
+// User is an OpenStack user.
+type User struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }

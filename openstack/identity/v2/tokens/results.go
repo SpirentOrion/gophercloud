@@ -132,6 +132,22 @@ func (r CreateResult) ExtractServiceCatalog() (*ServiceCatalog, error) {
 	return &ServiceCatalog{Entries: s.Access.Entries}, err
 }
 
+// ExtractUser returns the User information that was generated along with the user's Token.
+func (r CreateResult) ExtractUser() (*User, error) {
+	var s struct {
+		Access struct {
+			User User `json:"user"`
+		} `json:"access"`
+	}
+
+	err := r.ExtractInto(&s)
+	if err != nil {
+		return nil, err
+	}
+
+	return &s.Access.User, nil
+}
+
 // createErr quickly packs an error in a CreateResult.
 func createErr(err error) CreateResult {
 	return CreateResult{gophercloud.Result{Err: err}}
