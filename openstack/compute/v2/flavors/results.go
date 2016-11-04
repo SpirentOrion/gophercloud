@@ -38,6 +38,8 @@ type Flavor struct {
 	Swap int `json:"swap"`
 	// VCPUs indicates how many (virtual) CPUs are available for this flavor.
 	VCPUs int `json:"vcpus"`
+	// The size in GB of the ephemeral disk
+	Ephemeral int `json:"OS-FLV-EXT-DATA:ephemeral"`
 }
 
 func (f *Flavor) UnmarshalJSON(b []byte) error {
@@ -49,6 +51,7 @@ func (f *Flavor) UnmarshalJSON(b []byte) error {
 		RxTxFactor float64     `json:"rxtx_factor"`
 		Swap       interface{} `json:"swap"`
 		VCPUs      int         `json:"vcpus"`
+		Ephemeral  int         `json:"OS-FLV-EXT-DATA:ephemeral"`
 	}
 	err := json.Unmarshal(b, &flavor)
 	if err != nil {
@@ -61,6 +64,7 @@ func (f *Flavor) UnmarshalJSON(b []byte) error {
 	f.Name = flavor.Name
 	f.RxTxFactor = flavor.RxTxFactor
 	f.VCPUs = flavor.VCPUs
+	f.Ephemeral = flavor.Ephemeral
 
 	switch t := flavor.Swap.(type) {
 	case float64:
