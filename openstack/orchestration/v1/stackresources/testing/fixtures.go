@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-	"time"
+	// "time"
 
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack/orchestration/v1/stackresources"
@@ -28,14 +28,14 @@ var FindExpected = []stackresources.Resource{
 		},
 		LogicalID:    "hello_world",
 		StatusReason: "state changed",
-		UpdatedTime:  gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 11, 0, time.UTC)),
-		CreationTime: gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 10, 0, time.UTC)),
-		RequiredBy:   []interface{}{},
-		Status:       "CREATE_IN_PROGRESS",
-		PhysicalID:   "49181cd6-169a-4130-9455-31185bbfc5bf",
-		Type:         "OS::Nova::Server",
-		Attributes:   map[string]interface{}{"SXSW": "atx"},
-		Description:  "Some resource",
+		// UpdatedTime:  gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 11, 0, time.UTC)),
+		// CreationTime: gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 10, 0, time.UTC)),
+		RequiredBy:  []interface{}{},
+		Status:      "CREATE_IN_PROGRESS",
+		PhysicalID:  "49181cd6-169a-4130-9455-31185bbfc5bf",
+		Type:        "OS::Nova::Server",
+		Attributes:  map[string]interface{}{"SXSW": "atx"},
+		Description: "Some resource",
 	},
 }
 
@@ -99,14 +99,14 @@ var ListExpected = []stackresources.Resource{
 		},
 		LogicalID:    "hello_world",
 		StatusReason: "state changed",
-		UpdatedTime:  gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 11, 0, time.UTC)),
-		CreationTime: gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 10, 0, time.UTC)),
-		RequiredBy:   []interface{}{},
-		Status:       "CREATE_IN_PROGRESS",
-		PhysicalID:   "49181cd6-169a-4130-9455-31185bbfc5bf",
-		Type:         "OS::Nova::Server",
-		Attributes:   map[string]interface{}{"SXSW": "atx"},
-		Description:  "Some resource",
+		// UpdatedTime:  gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 11, 0, time.UTC)),
+		// CreationTime: gophercloud.JSONRFC3339NoZ(time.Date(2015, 2, 5, 21, 33, 10, 0, time.UTC)),
+		RequiredBy:  []interface{}{},
+		Status:      "CREATE_IN_PROGRESS",
+		PhysicalID:  "49181cd6-169a-4130-9455-31185bbfc5bf",
+		Type:        "OS::Nova::Server",
+		Attributes:  map[string]interface{}{"SXSW": "atx"},
+		Description: "Some resource",
 	},
 }
 
@@ -177,11 +177,11 @@ var GetExpected = &stackresources.Resource{
 	LogicalID:    "wordpress_instance",
 	Attributes:   map[string]interface{}{"SXSW": "atx"},
 	StatusReason: "state changed",
-	UpdatedTime:  gophercloud.JSONRFC3339NoZ(time.Date(2014, 12, 10, 18, 34, 35, 0, time.UTC)),
-	RequiredBy:   []interface{}{},
-	Status:       "CREATE_COMPLETE",
-	PhysicalID:   "00e3a2fe-c65d-403c-9483-4db9930dd194",
-	Type:         "OS::Nova::Server",
+	// UpdatedTime:  gophercloud.JSONRFC3339NoZ(time.Date(2014, 12, 10, 18, 34, 35, 0, time.UTC)),
+	RequiredBy: []interface{}{},
+	Status:     "CREATE_COMPLETE",
+	PhysicalID: "00e3a2fe-c65d-403c-9483-4db9930dd194",
+	Type:       "OS::Nova::Server",
 }
 
 // GetOutput represents the response body from a Get request.
