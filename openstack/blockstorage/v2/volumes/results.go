@@ -84,9 +84,11 @@ func (page VolumePage) NextPageURL() (string, error) {
 
 // ExtractVolumes extracts and returns Volumes. It is used while iterating over a volumes.List call.
 func ExtractVolumes(r pagination.Page) ([]Volume, error) {
-	var s []Volume
-	err := ExtractVolumesInto(r, &s)
-	return s, err
+	var s struct {
+		Volumes []Volume `json:"volumes"`
+	}
+	err := (r.(VolumePage)).ExtractInto(&s)
+	return s.Volumes, err
 }
 
 type commonResult struct {
