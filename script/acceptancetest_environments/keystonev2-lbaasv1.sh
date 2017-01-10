@@ -19,6 +19,7 @@
 # * Neutron v2
 # * Neutron LBaaS v1.0
 # * Neutron FWaaS v2.0
+# * Manila v2
 #
 # Go 1.6 is also installed.
 
@@ -37,6 +38,9 @@ eval "$(/usr/local/bin/gimme 1.6)"
 echo 'export GOPATH=$HOME/go' >> .bashrc
 export GOPATH=$HOME/go
 source .bashrc
+
+go get golang.org/x/crypto/ssh
+go get github.com/gophercloud/gophercloud
 
 git clone https://git.openstack.org/openstack-dev/devstack -b stable/mitaka
 cd devstack
@@ -134,6 +138,9 @@ disable_service horizon
 #enable_plugin zaqar https://github.com/openstack/zaqar
 #enable_service zaqar-server
 
+# Enable Manila
+enable_plugin manila https://github.com/openstack/manila
+
 # Automatically download and register a VM image that Heat can launch
 # For more information on Heat and DevStack see
 # http://docs.openstack.org/developer/heat/getting_started/on_devstack.html
@@ -147,22 +154,12 @@ LOGDIR=/opt/stack/logs
 EOF
 ./stack.sh
 
-# Patch openrc
-#cat >> openrc <<EOF
-#
-# Currently, in order to use openstackclient with Identity API v3,
-# we need to set the domain which the user and project belong to.
-#if [ "$OS_IDENTITY_API_VERSION" = "3" ]; then
-#  export OS_USER_DOMAIN_ID=${OS_USER_DOMAIN_ID:-"default"}
-#  export OS_PROJECT_DOMAIN_ID=${OS_PROJECT_DOMAIN_ID:-"default"}
-#fi
-#EOF
-
 # Prep the testing environment by creating the required testing resources and environment variables
 source openrc admin
 wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 glance image-create --name CirrOS --disk-format qcow2 --container-format bare < cirros-0.3.4-x86_64-disk.img
-nova flavor-create m1.tform 99 512 5 1 --ephemeral 10
+nova flavor-create m1.acctest 99 512 5 1 --ephemeral 10
+nova flavor-create m1.resize 98 512 6 1 --ephemeral 10
 _NETWORK_ID=$(nova net-list | grep private | awk -F\| '{print $2}' | tr -d ' ')
 _EXTGW_ID=$(nova net-list | grep public | awk -F\| '{print $2}' | tr -d ' ')
 _IMAGE_ID=$(nova image-list | grep CirrOS | awk -F\| '{print $2}' | tr -d ' ' | head -1)
@@ -172,4 +169,5 @@ echo export OS_NETWORK_ID=$_NETWORK_ID >> openrc
 echo export OS_EXTGW_ID=$_EXTGW_ID >> openrc
 echo export OS_POOL_NAME="public" >> openrc
 echo export OS_FLAVOR_ID=99 >> openrc
+echo export OS_FLAVOR_ID_RESIZE=98 >> openrc
 source openrc demo

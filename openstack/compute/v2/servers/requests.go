@@ -145,7 +145,7 @@ type CreateOpts struct {
 	SecurityGroups []string `json:"-"`
 
 	// UserData contains configuration information or scripts to use upon launch.
-	// Create will base64-encode it for you.
+	// Create will base64-encode it for you, if it isn't already.
 	UserData []byte `json:"-"`
 
 	// AvailabilityZone in which to launch the server.
@@ -156,7 +156,7 @@ type CreateOpts struct {
 	Networks []Network `json:"-"`
 
 	// Metadata contains key-value pairs (up to 255 bytes each) to attach to the server.
-	Metadata map[string]string `json:"-"`
+	Metadata map[string]string `json:"metadata,omitempty"`
 
 	// Personality includes files to inject into the server at launch.
 	// Create will base64-encode file contents for you.
@@ -190,8 +190,13 @@ func (opts CreateOpts) ToServerCreateMap() (map[string]interface{}, error) {
 	}
 
 	if opts.UserData != nil {
-		encoded := base64.StdEncoding.EncodeToString(opts.UserData)
-		b["user_data"] = &encoded
+		var userData string
+		if _, err := base64.StdEncoding.DecodeString(string(opts.UserData)); err != nil {
+			userData = base64.StdEncoding.EncodeToString(opts.UserData)
+		} else {
+			userData = string(opts.UserData)
+		}
+		b["user_data"] = &userData
 	}
 
 	if len(opts.SecurityGroups) > 0 {
@@ -219,23 +224,21 @@ func (opts CreateOpts) ToServerCreateMap() (map[string]interface{}, error) {
 		b["networks"] = networks
 	}
 
-	// If ImageRef isn't provided, use ImageName to ascertain the image ID.
+	// If ImageRef isn't provided, check if ImageName was provided to ascertain
+	// the image ID.
 	if opts.ImageRef == "" {
-		if opts.ImageName == "" {
-			err := ErrNeitherImageIDNorImageNameProvided{}
-			err.Argument = "ImageRef/ImageName"
-			return nil, err
+		if opts.ImageName != "" {
+			if sc == nil {
+				err := ErrNoClientProvidedForIDByName{}
+				err.Argument = "ServiceClient"
+				return nil, err
+			}
+			imageID, err := images.IDFromName(sc, opts.ImageName)
+			if err != nil {
+				return nil, err
+			}
+			b["imageRef"] = imageID
 		}
-		if sc == nil {
-			err := ErrNoClientProvidedForIDByName{}
-			err.Argument = "ServiceClient"
-			return nil, err
-		}
-		imageID, err := images.IDFromName(sc, opts.ImageName)
-		if err != nil {
-			return nil, err
-		}
-		b["imageRef"] = imageID
 	}
 
 	// If FlavorRef isn't provided, use FlavorName to ascertain the flavor ID.
@@ -424,23 +427,21 @@ func (opts RebuildOpts) ToServerRebuildMap() (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	// If ImageRef isn't provided, use ImageName to ascertain the image ID.
+	// If ImageRef isn't provided, check if ImageName was provided to ascertain
+	// the image ID.
 	if opts.ImageID == "" {
-		if opts.ImageName == "" {
-			err := ErrNeitherImageIDNorImageNameProvided{}
-			err.Argument = "ImageRef/ImageName"
-			return nil, err
+		if opts.ImageName != "" {
+			if opts.ServiceClient == nil {
+				err := ErrNoClientProvidedForIDByName{}
+				err.Argument = "ServiceClient"
+				return nil, err
+			}
+			imageID, err := images.IDFromName(opts.ServiceClient, opts.ImageName)
+			if err != nil {
+				return nil, err
+			}
+			b["imageRef"] = imageID
 		}
-		if opts.ServiceClient == nil {
-			err := ErrNoClientProvidedForIDByName{}
-			err.Argument = "ServiceClient"
-			return nil, err
-		}
-		imageID, err := images.IDFromName(opts.ServiceClient, opts.ImageName)
-		if err != nil {
-			return nil, err
-		}
-		b["imageRef"] = imageID
 	}
 
 	return map[string]interface{}{"rebuild": b}, nil
@@ -478,11 +479,11 @@ func (opts ResizeOpts) ToServerResizeMap() (map[string]interface{}, error) {
 
 // Resize instructs the provider to change the flavor of the server.
 // Note that this implies rebuilding it.
-// Unfortunately, one cannot pass rebuild parameters to the rize function.
-// When the rize completes, the server will be in RESIZE_VERIFY state.
+// Unfortunately, one cannot pass rebuild parameters to the resize function.
+// When the resize completes, the server will be in RESIZE_VERIFY state.
 // While in this state, you can explore the use of the new server's configuration.
-// If you like it, call ConfirmResize() to commit the rize permanently.
-// Otherwise, call RevertResize() to rtore the old configuration.
+// If you like it, call ConfirmResize() to commit the resize permanently.
+// Otherwise, call RevertResize() to restore the old configuration.
 func Resize(client *gophercloud.ServiceClient, id string, opts ResizeOptsBuilder) (r ActionResult) {
 	b, err := opts.ToServerResizeMap()
 	if err != nil {
@@ -493,7 +494,7 @@ func Resize(client *gophercloud.ServiceClient, id string, opts ResizeOptsBuilder
 	return
 }
 
-// ConfirmResize confirms a previous rize operation on a server.
+// ConfirmResize confirms a previous resize operation on a server.
 // See Resize() for more details.
 func ConfirmResize(client *gophercloud.ServiceClient, id string) (r ActionResult) {
 	_, r.Err = client.Post(actionURL(client, id), map[string]interface{}{"confirmResize": nil}, nil, &gophercloud.RequestOpts{
@@ -502,7 +503,7 @@ func ConfirmResize(client *gophercloud.ServiceClient, id string) (r ActionResult
 	return
 }
 
-// RevertResize cancels a previous rize operation on a server.
+// RevertResize cancels a previous resize operation on a server.
 // See Resize() for more details.
 func RevertResize(client *gophercloud.ServiceClient, id string) (r ActionResult) {
 	_, r.Err = client.Post(actionURL(client, id), map[string]interface{}{"revertResize": nil}, nil, nil)

@@ -368,7 +368,7 @@ var (
 		Name:     "herp",
 		Created:  "2014-09-25T13:10:02Z",
 		TenantID: "fcad67a6189847c4aecfa3c81a05783b",
-		Metadata: map[string]interface{}{},
+		Metadata: map[string]string{},
 		SecurityGroups: []map[string]interface{}{
 			map[string]interface{}{
 				"name": "default",
@@ -431,7 +431,7 @@ var (
 		Name:     "derp",
 		Created:  "2014-09-25T13:04:41Z",
 		TenantID: "fcad67a6189847c4aecfa3c81a05783b",
-		Metadata: map[string]interface{}{},
+		Metadata: map[string]string{},
 		SecurityGroups: []map[string]interface{}{
 			map[string]interface{}{
 				"name": "default",
@@ -486,7 +486,7 @@ var (
 		Name:     "merp",
 		Created:  "2014-09-25T13:04:41Z",
 		TenantID: "fcad67a6189847c4aecfa3c81a05783b",
-		Metadata: map[string]interface{}{},
+		Metadata: map[string]string{},
 		SecurityGroups: []map[string]interface{}{
 			map[string]interface{}{
 				"name": "default",
@@ -631,6 +631,50 @@ func HandleServerCreationWithCustomFieldSuccessfully(t *testing.T, response stri
 				"imageRef": "f90f6034-2570-4974-8351-6b49732ef2eb",
 				"flavorRef": "1",
 				"foo": "bar"
+			}
+		}`)
+
+		w.WriteHeader(http.StatusAccepted)
+		w.Header().Add("Content-Type", "application/json")
+		fmt.Fprintf(w, response)
+	})
+}
+
+// HandleServerCreationWithUserdata sets up the test server to respond to a server creation request
+// with a given response.
+func HandleServerCreationWithUserdata(t *testing.T, response string) {
+	th.Mux.HandleFunc("/servers", func(w http.ResponseWriter, r *http.Request) {
+		th.TestMethod(t, r, "POST")
+		th.TestHeader(t, r, "X-Auth-Token", client.TokenID)
+		th.TestJSONRequest(t, r, `{
+			"server": {
+				"name": "derp",
+				"imageRef": "f90f6034-2570-4974-8351-6b49732ef2eb",
+				"flavorRef": "1",
+				"user_data": "dXNlcmRhdGEgc3RyaW5n"
+			}
+		}`)
+
+		w.WriteHeader(http.StatusAccepted)
+		w.Header().Add("Content-Type", "application/json")
+		fmt.Fprintf(w, response)
+	})
+}
+
+// HandleServerCreationWithMetadata sets up the test server to respond to a server creation request
+// with a given response.
+func HandleServerCreationWithMetadata(t *testing.T, response string) {
+	th.Mux.HandleFunc("/servers", func(w http.ResponseWriter, r *http.Request) {
+		th.TestMethod(t, r, "POST")
+		th.TestHeader(t, r, "X-Auth-Token", client.TokenID)
+		th.TestJSONRequest(t, r, `{
+			"server": {
+				"name": "derp",
+				"imageRef": "f90f6034-2570-4974-8351-6b49732ef2eb",
+				"flavorRef": "1",
+				"metadata": {
+					"abc": "def"
+				}
 			}
 		}`)
 
