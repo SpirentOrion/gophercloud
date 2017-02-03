@@ -143,9 +143,9 @@ func HandleImageListSuccessfully(t *testing.T) {
 		fmt.Fprintf(w, strings.Join(imageJSON, ","))
 
 		fmt.Fprintf(w, `],
-			    "next": "/images?marker=%s&limit=%v",
-			    "schema": "/schemas/images",
-			    "first": "/images?limit=%v"}`, newMarker, limit, limit)
+			    "next": "/v2/images?marker=%s&limit=%v",
+			    "schema": "/v2/schemas/images",
+			    "first": "/v2/images?limit=%v"}`, newMarker, limit, limit)
 
 	})
 }
@@ -161,7 +161,8 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"tags": [
 				"ubuntu",
 				"quantal"
-			]
+			],
+			"foo": "bar"
 		}`)
 
 		w.WriteHeader(http.StatusCreated)
@@ -186,7 +187,8 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"schema": "/v2/schemas/image",
 			"size": 0,
 			"checksum": "",
-			"virtual_size": 0
+			"virtual_size": 0,
+			"properties": {"foo": "bar"}
 		}`)
 	})
 }
@@ -260,7 +262,7 @@ func HandleImageGetSuccessfully(t *testing.T) {
 			"size": 13167616,
 			"min_ram": 0,
 			"schema": "/v2/schemas/image",
-			"virtual_size": "None"
+			"virtual_size": null
 		}`)
 	})
 }
