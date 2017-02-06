@@ -31,7 +31,13 @@ func TestListImage(t *testing.T) {
 		}
 
 		for _, i := range images {
-			t.Logf("%s\t%s\t%s\t%s\t%v\t\n", i.ID, i.Name, i.Owner, i.Checksum, i.SizeBytes)
+			t.Logf("%s\t%s\t%s\t%s\t%v\t%+v\n", i.ID, i.Name, i.Owner,
+				i.Checksum, i.SizeBytes, i.Properties)
+			if i.ID == "07aa21a9-fa1a-430e-9a33-185be5982431" {
+				th.AssertEquals(t, 2, len(i.Properties))
+			} else {
+				th.AssertEquals(t, 0, len(i.Properties))
+			}
 			count++
 		}
 
@@ -57,6 +63,9 @@ func TestCreateImage(t *testing.T) {
 		ID:   id,
 		Name: name,
 		Tags: []string{"ubuntu", "quantal"},
+		Properties: map[string]string{
+			"foo": "bar",
+		},
 	}).Extract()
 
 	th.AssertNoErr(t, err)
@@ -70,6 +79,8 @@ func TestCreateImage(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
+	self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
+	properties := map[string]string{"foo": "bar"}
 
 	expectedImage := images.Image{
 		ID:   "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",
@@ -91,6 +102,9 @@ func TestCreateImage(t *testing.T) {
 		CreatedAt:  createdDate,
 		UpdatedAt:  lastUpdate,
 		Schema:     schema,
+
+		Self:       self,
+		Properties: properties,
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
@@ -122,6 +136,7 @@ func TestCreateImageNulls(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
+	self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
 
 	expectedImage := images.Image{
 		ID:   "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",
@@ -143,6 +158,7 @@ func TestCreateImageNulls(t *testing.T) {
 		CreatedAt:  createdDate,
 		UpdatedAt:  lastUpdate,
 		Schema:     schema,
+		Self:       self,
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
@@ -169,6 +185,7 @@ func TestGetImage(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
+	self := "/v2/images/1bea47ed-f6a9-463b-b423-14b9cca9ad27"
 
 	expectedImage := images.Image{
 		ID:   "1bea47ed-f6a9-463b-b423-14b9cca9ad27",
@@ -194,6 +211,9 @@ func TestGetImage(t *testing.T) {
 		CreatedAt: createdDate,
 		UpdatedAt: lastUpdate,
 		Schema:    schema,
+		Self:      self,
+
+		Properties: map[string]string{},
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
@@ -228,6 +248,7 @@ func TestUpdateImage(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
+	self := "/v2/images/da3b75d9-3f4a-40e7-8a2c-bfab23927dea"
 
 	expectedImage := images.Image{
 		ID:         "da3b75d9-3f4a-40e7-8a2c-bfab23927dea",
@@ -253,6 +274,8 @@ func TestUpdateImage(t *testing.T) {
 		CreatedAt:       createdDate,
 		UpdatedAt:       lastUpdate,
 		Schema:          schema,
+		Self:            self,
+		Properties:      map[string]string{},
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
