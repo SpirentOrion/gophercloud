@@ -67,10 +67,10 @@ type Image struct {
 	Properties map[string]string `json:"properties"`
 
 	// CreatedAt is the date when the image has been created.
-	CreatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"created_at"`
 
 	// UpdatedAt is the date when the last change has been made to the image or it's properties.
-	UpdatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"updated_at"`
 
 	// File is the trailing path after the glance endpoint that represent the location
 	// of the image or the path to retrieve it.
@@ -92,40 +92,32 @@ type Image struct {
 	Locations []string `json:"locations"`
 }
 
-func (s *Image) UnmarshalJSON(b []byte) error {
+func (r *Image) UnmarshalJSON(b []byte) error {
 	type tmp Image
-	var p *struct {
+	var s *struct {
 		tmp
 		SizeBytes interface{} `json:"size"`
-		CreatedAt string      `json:"created_at"`
-		UpdatedAt string      `json:"updated_at"`
 	}
-	err := json.Unmarshal(b, &p)
+	err := json.Unmarshal(b, &s)
 	if err != nil {
 		return err
 	}
-	*s = Image(p.tmp)
+	*r = Image(s.tmp)
 
-	switch t := p.SizeBytes.(type) {
+	switch t := s.SizeBytes.(type) {
 	case nil:
 		return nil
 	case float32:
-		s.SizeBytes = int64(t)
+		r.SizeBytes = int64(t)
 	case float64:
-		s.SizeBytes = int64(t)
+		r.SizeBytes = int64(t)
 	default:
 		return fmt.Errorf("Unknown type for SizeBytes: %v (value: %v)", reflect.TypeOf(t), t)
 	}
 
-	s.CreatedAt, err = time.Parse(time.RFC3339, p.CreatedAt)
-	if err != nil {
-		return err
-	}
-	s.UpdatedAt, err = time.Parse(time.RFC3339, p.UpdatedAt)
-
 	// TODO: This should be removed once the Image API groups custom properties
 	// under a "properties" object.
-	err = s.unmarshalCustomProperties(b, p)
+	err = r.unmarshalCustomProperties(b, s)
 	return err
 }
 
@@ -160,7 +152,7 @@ func jsonTagKeys(s interface{}) []string {
 // they are key:value pairs within the top level JSON response object.
 // Therefore, this function is needed to group all the custom properties
 // into the Image.Properties field for easy access by clients.
-func (s *Image) unmarshalCustomProperties(b []byte, st interface{}) error {
+func (r *Image) unmarshalCustomProperties(b []byte, st interface{}) error {
 	// Store custom properties that appear as top level JSON key:value pairs.
 	custom := make(map[string]interface{})
 	err := json.Unmarshal(b, &custom)
@@ -178,10 +170,10 @@ func (s *Image) unmarshalCustomProperties(b []byte, st interface{}) error {
 	}
 	// At this point, custom map should only contain custom properties so update
 	// the Image.Properties field.
-	s.Properties = make(map[string]string)
+	r.Properties = make(map[string]string)
 	for k, v := range custom {
 		if value, ok := v.(string); ok {
-			s.Properties[k] = value
+			r.Properties[k] = value
 		}
 	}
 	return nil

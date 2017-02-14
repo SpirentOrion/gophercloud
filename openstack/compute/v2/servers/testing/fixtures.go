@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
@@ -320,10 +321,12 @@ const ServerPasswordBody = `
 `
 
 var (
+	herpTimeCreated, _ = time.Parse(time.RFC3339, "2014-09-25T13:10:02Z")
+	herpTimeUpdated, _ = time.Parse(time.RFC3339, "2014-09-25T13:10:10Z")
 	// ServerHerp is a Server struct that should correspond to the first result in ServerListBody.
 	ServerHerp = servers.Server{
 		Status:  "ACTIVE",
-		Updated: "2014-09-25T13:10:10Z",
+		Updated: herpTimeUpdated,
 		HostID:  "29d3c8c896a45aa4c34e52247875d7fefc3d94bbcc9f622b5d204362",
 		Addresses: map[string]interface{}{
 			"private": []interface{}{
@@ -366,7 +369,7 @@ var (
 		ID:       "ef079b0c-e610-4dfb-b1aa-b49f07ac48e5",
 		UserID:   "9349aff8be7545ac9d2f1d00999a23cd",
 		Name:     "herp",
-		Created:  "2014-09-25T13:10:02Z",
+		Created:  herpTimeCreated,
 		TenantID: "fcad67a6189847c4aecfa3c81a05783b",
 		Metadata: map[string]string{},
 		SecurityGroups: []map[string]interface{}{
@@ -383,10 +386,12 @@ var (
 		},
 	}
 
+	derpTimeCreated, _ = time.Parse(time.RFC3339, "2014-09-25T13:04:41Z")
+	derpTimeUpdated, _ = time.Parse(time.RFC3339, "2014-09-25T13:04:49Z")
 	// ServerDerp is a Server struct that should correspond to the second server in ServerListBody.
 	ServerDerp = servers.Server{
 		Status:  "ACTIVE",
-		Updated: "2014-09-25T13:04:49Z",
+		Updated: derpTimeUpdated,
 		HostID:  "29d3c8c896a45aa4c34e52247875d7fefc3d94bbcc9f622b5d204362",
 		Addresses: map[string]interface{}{
 			"private": []interface{}{
@@ -429,7 +434,7 @@ var (
 		ID:       "9e5476bd-a4ec-4653-93d6-72c93aa682ba",
 		UserID:   "9349aff8be7545ac9d2f1d00999a23cd",
 		Name:     "derp",
-		Created:  "2014-09-25T13:04:41Z",
+		Created:  derpTimeCreated,
 		TenantID: "fcad67a6189847c4aecfa3c81a05783b",
 		Metadata: map[string]string{},
 		SecurityGroups: []map[string]interface{}{
@@ -446,10 +451,12 @@ var (
 		},
 	}
 
+	merpTimeCreated, _ = time.Parse(time.RFC3339, "2014-09-25T13:04:41Z")
+	merpTimeUpdated, _ = time.Parse(time.RFC3339, "2014-09-25T13:04:49Z")
 	// ServerMerp is a Server struct that should correspond to the second server in ServerListBody.
 	ServerMerp = servers.Server{
 		Status:  "ACTIVE",
-		Updated: "2014-09-25T13:04:49Z",
+		Updated: merpTimeUpdated,
 		HostID:  "29d3c8c896a45aa4c34e52247875d7fefc3d94bbcc9f622b5d204362",
 		Addresses: map[string]interface{}{
 			"private": []interface{}{
@@ -484,7 +491,7 @@ var (
 		ID:       "9e5476bd-a4ec-4653-93d6-72c93aa682bb",
 		UserID:   "9349aff8be7545ac9d2f1d00999a23cd",
 		Name:     "merp",
-		Created:  "2014-09-25T13:04:41Z",
+		Created:  merpTimeCreated,
 		TenantID: "fcad67a6189847c4aecfa3c81a05783b",
 		Metadata: map[string]string{},
 		SecurityGroups: []map[string]interface{}{
