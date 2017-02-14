@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack/orchestration/v1/stacks"
@@ -255,8 +254,8 @@ var PreviewExpected = &stacks.PreviewedStack{
 		"OS::stack_name": "postman_stack",
 		"OS::stack_id":   "16ef0584-4458-41eb-87c8-0dc8d5f66c87",
 	},
-	Name:         "postman_stack",
-	CreationTime: time.Date(2015, 2, 3, 20, 7, 39, 0, time.UTC),
+	Name: "postman_stack",
+	// CreationTime: time.Date(2015, 2, 3, 20, 7, 39, 0, time.UTC),
 	Links: []gophercloud.Link{
 		{
 			Href: "http://166.76.160.117:8004/v1/98606384f58d4ad0b3db7d0d779549ac/stacks/postman_stack/16ef0584-4458-41eb-87c8-0dc8d5f66c87",
