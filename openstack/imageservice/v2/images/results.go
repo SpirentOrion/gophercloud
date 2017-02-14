@@ -94,7 +94,7 @@ type Image struct {
 
 func (r *Image) UnmarshalJSON(b []byte) error {
 	type tmp Image
-	var s struct {
+	var s *struct {
 		tmp
 		SizeBytes interface{} `json:"size"`
 	}
