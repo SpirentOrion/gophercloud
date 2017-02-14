@@ -169,24 +169,24 @@ type PreviewedStack struct {
 	UpdatedTime         time.Time          `json:"-"`
 }
 
-func (r *PreviewedStack) UnmarshalJSON(b []byte) error {
-	type tmp PreviewedStack
-	var s struct {
-		tmp
-		CreationTime gophercloud.JSONRFC3339NoZ `json:"creation_time"`
-		UpdatedTime  gophercloud.JSONRFC3339NoZ `json:"updated_time"`
-	}
-	err := json.Unmarshal(b, &s)
-	if err != nil {
-		return err
-	}
-	*r = PreviewedStack(s.tmp)
+// func (r *PreviewedStack) UnmarshalJSON(b []byte) error {
+// 	type tmp PreviewedStack
+// 	var s struct {
+// 		tmp
+// 		CreationTime gophercloud.JSONRFC3339NoZ `json:"creation_time"`
+// 		UpdatedTime  gophercloud.JSONRFC3339NoZ `json:"updated_time"`
+// 	}
+// 	err := json.Unmarshal(b, &s)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	*r = PreviewedStack(s.tmp)
 
-	r.CreationTime = time.Time(s.CreationTime)
-	r.UpdatedTime = time.Time(s.UpdatedTime)
+// 	r.CreationTime = time.Time(s.CreationTime)
+// 	r.UpdatedTime = time.Time(s.UpdatedTime)
 
-	return nil
-}
+// 	return nil
+// }
 
 // PreviewResult represents the result of a Preview operation.
 type PreviewResult struct {
