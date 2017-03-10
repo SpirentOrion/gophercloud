@@ -56,6 +56,9 @@ type ProviderClient struct {
 	// UserID identifies the user associated with the token
 	UserID string
 
+	// TenantID identifies the tenant/project associated with the token
+	TenantID string
+
 	// EndpointLocator describes how this provider discovers the endpoints for
 	// its constituent services.
 	EndpointLocator EndpointLocator
