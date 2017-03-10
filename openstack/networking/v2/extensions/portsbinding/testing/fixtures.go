@@ -156,22 +156,23 @@ func HandleUpdate(t *testing.T) {
 		th.TestHeader(t, r, "Accept", "application/json")
 		th.TestJSONRequest(t, r, `
 {
-		"port": {
-			"name": "new_port_name",
-			"fixed_ips": [
-				{
-					"subnet_id": "a0304c3a-4f08-4c43-88af-d796509c97d2",
-					"ip_address": "10.0.0.3"
-				}
-			],
-			"security_groups": [
-            	"f0ac4394-7e4a-4409-9701-ba8be283dbc3"
-        	],
-        	"binding:host_id": "HOST1",
-        	"binding:vnic_type": "normal"
-		}
+        "port": {
+            "allowed_address_pairs": null,
+            "name": "new_port_name",
+            "fixed_ips": [
+                {
+                    "subnet_id": "a0304c3a-4f08-4c43-88af-d796509c97d2",
+                    "ip_address": "10.0.0.3"
+                }
+            ],
+            "security_groups": [
+                "f0ac4394-7e4a-4409-9701-ba8be283dbc3"
+            ],
+            "binding:host_id": "HOST1",
+            "binding:vnic_type": "normal"
+        }
 }
-			`)
+            `)
 
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
