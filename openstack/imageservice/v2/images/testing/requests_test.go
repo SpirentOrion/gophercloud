@@ -50,6 +50,19 @@ func TestListImage(t *testing.T) {
 	th.AssertEquals(t, 3, count)
 }
 
+func TestAllPagesImage(t *testing.T) {
+	th.SetupHTTP()
+	defer th.TeardownHTTP()
+
+	HandleImageListSuccessfully(t)
+
+	pages, err := images.List(fakeclient.ServiceClient(), nil).AllPages()
+	th.AssertNoErr(t, err)
+	images, err := images.ExtractImages(pages)
+	th.AssertNoErr(t, err)
+	th.AssertEquals(t, 3, len(images))
+}
+
 func TestCreateImage(t *testing.T) {
 	th.SetupHTTP()
 	defer th.TeardownHTTP()
@@ -62,10 +75,10 @@ func TestCreateImage(t *testing.T) {
 	actualImage, err := images.Create(fakeclient.ServiceClient(), images.CreateOpts{
 		ID:   id,
 		Name: name,
-		Tags: []string{"ubuntu", "quantal"},
 		Properties: map[string]string{
-			"foo": "bar",
+			"architecture": "x86_64",
 		},
+		Tags: []string{"ubuntu", "quantal"},
 	}).Extract()
 
 	th.AssertNoErr(t, err)
@@ -80,7 +93,7 @@ func TestCreateImage(t *testing.T) {
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
 	self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
-	properties := map[string]string{"foo": "bar"}
+	properties := map[string]string{"architecture": "x86_64"}
 
 	expectedImage := images.Image{
 		ID:   "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",

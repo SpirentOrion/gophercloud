@@ -158,11 +158,11 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 		th.TestJSONRequest(t, r, `{
 			"id": "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",
 			"name": "Ubuntu 12.10",
+			"architecture": "x86_64",
 			"tags": [
 				"ubuntu",
 				"quantal"
-			],
-			"foo": "bar"
+			]
 		}`)
 
 		w.WriteHeader(http.StatusCreated)
@@ -188,7 +188,7 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"size": 0,
 			"checksum": "",
 			"virtual_size": 0,
-			"properties": {"foo": "bar"}
+			"architecture": "x86_64"
 		}`)
 	})
 }
