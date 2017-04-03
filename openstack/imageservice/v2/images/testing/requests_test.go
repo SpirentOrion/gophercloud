@@ -79,9 +79,6 @@ func TestCreateImage(t *testing.T) {
 			"architecture": "x86_64",
 		},
 		Tags: []string{"ubuntu", "quantal"},
-		Properties: map[string]string{
-			"foo": "bar",
-		},
 	}).Extract()
 
 	th.AssertNoErr(t, err)
@@ -96,7 +93,7 @@ func TestCreateImage(t *testing.T) {
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
 	self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
-	properties := map[string]string{"foo": "bar"}
+	properties := map[string]string{"architecture": "x86_64"}
 
 	expectedImage := images.Image{
 		ID:   "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",

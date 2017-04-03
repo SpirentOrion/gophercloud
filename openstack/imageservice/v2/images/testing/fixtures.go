@@ -162,8 +162,7 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"tags": [
 				"ubuntu",
 				"quantal"
-			],
-			"foo": "bar"
+			]
 		}`)
 
 		w.WriteHeader(http.StatusCreated)
@@ -189,7 +188,7 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"size": 0,
 			"checksum": "",
 			"virtual_size": 0,
-			"properties": {"foo": "bar"}
+			"architecture": "x86_64"
 		}`)
 	})
 }
