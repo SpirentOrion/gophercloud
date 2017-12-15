@@ -43,7 +43,10 @@ func HandleImageListSuccessfully(t *testing.T) {
             "owner": "cba624273b8344e59dd1fd18685183b0",
             "virtual_size": null,
             "min_ram": 0,
-            "schema": "/v2/schemas/image"
+            "schema": "/v2/schemas/image",
+            "hw_disk_bus": "scsi",
+            "hw_disk_bus_model": "virtio-scsi",
+            "hw_scsi_model": "virtio-scsi"
         }`}
 	images[1] = imageEntry{"cirros-0.3.4-x86_64-uec-ramdisk",
 		`{
@@ -65,7 +68,10 @@ func HandleImageListSuccessfully(t *testing.T) {
             "owner": "cba624273b8344e59dd1fd18685183b0",
             "virtual_size": null,
             "min_ram": 0,
-            "schema": "/v2/schemas/image"
+            "schema": "/v2/schemas/image",
+            "hw_disk_bus": "scsi",
+            "hw_disk_bus_model": "virtio-scsi",
+            "hw_scsi_model": "virtio-scsi"
         }`}
 	images[2] = imageEntry{"cirros-0.3.4-x86_64-uec-kernel",
 		`{
@@ -87,7 +93,10 @@ func HandleImageListSuccessfully(t *testing.T) {
             "owner": "cba624273b8344e59dd1fd18685183b0",
             "virtual_size": null,
             "min_ram": 0,
-            "schema": "/v2/schemas/image"
+            "schema": "/v2/schemas/image",
+            "hw_disk_bus": "scsi",
+            "hw_disk_bus_model": "virtio-scsi",
+            "hw_scsi_model": "virtio-scsi"
         }`}
 
 	th.Mux.HandleFunc("/images", func(w http.ResponseWriter, r *http.Request) {
@@ -188,7 +197,10 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"size": 0,
 			"checksum": "",
 			"virtual_size": 0,
-			"architecture": "x86_64"
+			"architecture": "x86_64",
+			"hw_disk_bus": "scsi",
+			"hw_disk_bus_model": "virtio-scsi",
+			"hw_scsi_model": "virtio-scsi"
 		}`)
 	})
 }
@@ -262,7 +274,10 @@ func HandleImageGetSuccessfully(t *testing.T) {
 			"size": 13167616,
 			"min_ram": 0,
 			"schema": "/v2/schemas/image",
-			"virtual_size": null
+			"virtual_size": null,
+			"hw_disk_bus": "scsi",
+			"hw_disk_bus_model": "virtio-scsi",
+			"hw_scsi_model": "virtio-scsi"
 		}`)
 	})
 }
@@ -324,7 +339,10 @@ func HandleImageUpdateSuccessfully(t *testing.T) {
 			"min_disk": 0,
 			"disk_format": "",
 			"virtual_size": 0,
-			"container_format": ""
+			"container_format": "",
+			"hw_disk_bus": "scsi",
+			"hw_disk_bus_model": "virtio-scsi",
+			"hw_scsi_model": "virtio-scsi"
 		}`)
 	})
 }
