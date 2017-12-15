@@ -1,7 +1,7 @@
 package images
 
 import (
-	"strings"
+	"net/url"
 
 	"github.com/gophercloud/gophercloud"
 )
@@ -38,15 +38,14 @@ func deleteURL(c *gophercloud.ServiceClient, imageID string) string {
 }
 
 // builds next page full url based on current url
-func nextPageURL(currentURL string, next string) string {
-	if next == "" {
-		return next
+func nextPageURL(currentURL string, next string) (string, error) {
+	base, err := url.Parse(currentURL)
+	if err != nil {
+		return "", err
 	}
-	base := currentURL[:strings.Index(currentURL, "/images")]
-	// The next URL may contain the version (i.e., /v2/images). Exclude it if so.
-	idx := strings.Index(next, "/images")
-	if idx != -1 {
-		next = next[idx:]
+	rel, err := url.Parse(next)
+	if err != nil {
+		return "", err
 	}
-	return base + next
+	return base.ResolveReference(rel).String(), nil
 }

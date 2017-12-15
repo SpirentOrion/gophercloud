@@ -93,7 +93,6 @@ func TestCreateImage(t *testing.T) {
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
 	self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
-	properties := map[string]string{"architecture": "x86_64"}
 
 	expectedImage := images.Image{
 		ID:   "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",
@@ -110,14 +109,19 @@ func TestCreateImage(t *testing.T) {
 
 		Owner: owner,
 
-		Visibility: images.ImageVisibilityPrivate,
-		File:       file,
-		CreatedAt:  createdDate,
-		UpdatedAt:  lastUpdate,
-		Schema:     schema,
-
-		Self:       self,
-		Properties: properties,
+		Visibility:  images.ImageVisibilityPrivate,
+		File:        file,
+		CreatedAt:   createdDate,
+		UpdatedAt:   lastUpdate,
+		Schema:      schema,
+		VirtualSize: 0,
+		Self:        self,
+		Properties: map[string]interface{}{
+			"architecture":      "x86_64",
+			"hw_disk_bus":       "scsi",
+			"hw_disk_bus_model": "virtio-scsi",
+			"hw_scsi_model":     "virtio-scsi",
+		},
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
@@ -218,15 +222,19 @@ func TestGetImage(t *testing.T) {
 		Protected:  false,
 		Visibility: images.ImageVisibilityPublic,
 
-		Checksum:  checksum,
-		SizeBytes: sizeBytes,
-		File:      file,
-		CreatedAt: createdDate,
-		UpdatedAt: lastUpdate,
-		Schema:    schema,
-		Self:      self,
-
-		Properties: map[string]string{},
+		Checksum:    checksum,
+		SizeBytes:   sizeBytes,
+		File:        file,
+		CreatedAt:   createdDate,
+		UpdatedAt:   lastUpdate,
+		Schema:      schema,
+		Self:        self,
+		VirtualSize: 0,
+		Properties: map[string]interface{}{
+			"hw_disk_bus":       "scsi",
+			"hw_disk_bus_model": "virtio-scsi",
+			"hw_scsi_model":     "virtio-scsi",
+		},
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
@@ -288,7 +296,12 @@ func TestUpdateImage(t *testing.T) {
 		UpdatedAt:       lastUpdate,
 		Schema:          schema,
 		Self:            self,
-		Properties:      map[string]string{},
+		VirtualSize:     0,
+		Properties: map[string]interface{}{
+			"hw_disk_bus":       "scsi",
+			"hw_disk_bus_model": "virtio-scsi",
+			"hw_scsi_model":     "virtio-scsi",
+		},
 	}
 
 	th.AssertDeepEquals(t, &expectedImage, actualImage)
