@@ -175,7 +175,7 @@ func (r *Image) unmarshalCustomProperties(b []byte, st interface{}) error {
 	}
 	// At this point, custom map should only contain custom properties so update
 	// the Image.Properties field.
-	r.Properties = make(map[string]string)
+	r.Properties = make(map[string]interface{})
 	for k, v := range custom {
 		if value, ok := v.(string); ok {
 			r.Properties[k] = value
