@@ -92,9 +92,6 @@ type Image struct {
 
 	// DirectURL is the URL to access the image file kept in external store.
 	DirectURL string `json:"direct_url"`
-
-	// Locations is a list of objects, each of which describes an image location.
-	Locations []string `json:"locations"`
 }
 
 func (r *Image) UnmarshalJSON(b []byte) error {
