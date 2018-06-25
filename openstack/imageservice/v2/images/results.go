@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
 	"time"
 
 	"github.com/gophercloud/gophercloud"
+	"github.com/gophercloud/gophercloud/internal"
 	"github.com/gophercloud/gophercloud/pagination"
 )
 
@@ -86,17 +86,11 @@ type Image struct {
 
 	// VirtualSize is the virtual size of the image
 	VirtualSize int64 `json:"virtual_size"`
-
-	// Self is the URL for the virtual machine image.
-	Self string `json:"self"`
-
-	// DirectURL is the URL to access the image file kept in external store.
-	DirectURL string `json:"direct_url"`
 }
 
 func (r *Image) UnmarshalJSON(b []byte) error {
 	type tmp Image
-	var s *struct {
+	var s struct {
 		tmp
 		SizeBytes interface{} `json:"size"`
 	}
@@ -117,68 +111,18 @@ func (r *Image) UnmarshalJSON(b []byte) error {
 		return fmt.Errorf("Unknown type for SizeBytes: %v (value: %v)", reflect.TypeOf(t), t)
 	}
 
-	// TODO: This should be removed once the Image API groups custom properties
-	// under a "properties" object.
-	err = r.unmarshalCustomProperties(b, s)
-	return err
-}
-
-// jsonTagKeys gets a list of JSON tag keys defined for the given struct.
-func jsonTagKeys(s interface{}) []string {
-	t := reflect.TypeOf(s).Elem()
-	keys := make([]string, 0, t.NumField())
-	for i := 0; i < t.NumField(); i++ {
-		var key string
-		field := t.Field(i)
-		if tagValue, ok := field.Tag.Lookup("json"); ok {
-			key = strings.Split(tagValue, ",")[0]
-			if key == "-" {
-				continue
-			}
-		}
-		if key == "" {
-			// not specified so use field name
-			key = strings.ToLower(field.Name)
-		}
-		keys = append(keys, key)
-	}
-	return keys
-}
-
-// unmarshalCustomProperties parses the JSON-encoded custom properties and
-// stores the result in the Image.Properties field.
-//
-// The OpenStack API allows custom key:value properties to be specified
-// when creating images.  As of the Newton release, these custom properties
-// are not contained within an explicit "properties" JSON object.  Rather,
-// they are key:value pairs within the top level JSON response object.
-// Therefore, this function is needed to group all the custom properties
-// into the Image.Properties field for easy access by clients.
-func (r *Image) unmarshalCustomProperties(b []byte, st interface{}) error {
-	// Store custom properties that appear as top level JSON key:value pairs.
-	custom := make(map[string]interface{})
-	err := json.Unmarshal(b, &custom)
+	// Bundle all other fields into Properties
+	var result interface{}
+	err = json.Unmarshal(b, &result)
 	if err != nil {
 		return err
 	}
-	// custom map now holds every key:value pair of the response so filter out
-	// all known fields in Image
-	fields := jsonTagKeys((*Image)(nil))
-	// Filter out additional keys from modified struct
-	fields = append(fields, jsonTagKeys(st)...)
-	// Remove known fields so only custom properties remain
-	for _, field := range fields {
-		delete(custom, field)
+	if resultMap, ok := result.(map[string]interface{}); ok {
+		delete(resultMap, "self")
+		r.Properties = internal.RemainingKeys(Image{}, resultMap)
 	}
-	// At this point, custom map should only contain custom properties so update
-	// the Image.Properties field.
-	r.Properties = make(map[string]interface{})
-	for k, v := range custom {
-		if value, ok := v.(string); ok {
-			r.Properties[k] = value
-		}
-	}
-	return nil
+
+	return err
 }
 
 type commonResult struct {

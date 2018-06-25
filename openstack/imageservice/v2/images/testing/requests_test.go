@@ -32,13 +32,7 @@ func TestListImage(t *testing.T) {
 		}
 
 		for _, i := range images {
-			t.Logf("%s\t%s\t%s\t%s\t%v\t%+v\n", i.ID, i.Name, i.Owner,
-				i.Checksum, i.SizeBytes, i.Properties)
-			if i.ID == "07aa21a9-fa1a-430e-9a33-185be5982431" {
-				th.AssertEquals(t, 2, len(i.Properties))
-			} else {
-				th.AssertEquals(t, 0, len(i.Properties))
-			}
+			t.Logf("%s\t%s\t%s\t%s\t%v\t\n", i.ID, i.Name, i.Owner, i.Checksum, i.SizeBytes)
 			count++
 		}
 
@@ -93,7 +87,6 @@ func TestCreateImage(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
-	self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
 
 	expectedImage := images.Image{
 		ID:   "e7db3b45-8db7-47ad-8109-3fb55c2c24fd",
@@ -116,9 +109,7 @@ func TestCreateImage(t *testing.T) {
 		UpdatedAt:   lastUpdate,
 		Schema:      schema,
 		VirtualSize: 0,
-		Self:        self,
 		Properties: map[string]interface{}{
-			"architecture":      "x86_64",
 			"hw_disk_bus":       "scsi",
 			"hw_disk_bus_model": "virtio-scsi",
 			"hw_scsi_model":     "virtio-scsi",
@@ -157,7 +148,6 @@ func TestCreateImageNulls(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
-	// self := "/v2/images/e7db3b45-8db7-47ad-8109-3fb55c2c24fd"
 	properties := map[string]interface{}{
 		"architecture": "x86_64",
 	}
@@ -183,7 +173,6 @@ func TestCreateImageNulls(t *testing.T) {
 		CreatedAt:  createdDate,
 		UpdatedAt:  lastUpdate,
 		Schema:     schema,
-		// Self:       self,
 		Properties: properties,
 		SizeBytes:  sizeBytes,
 	}
@@ -212,7 +201,6 @@ func TestGetImage(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
-	self := "/v2/images/1bea47ed-f6a9-463b-b423-14b9cca9ad27"
 
 	expectedImage := images.Image{
 		ID:   "1bea47ed-f6a9-463b-b423-14b9cca9ad27",
@@ -238,7 +226,6 @@ func TestGetImage(t *testing.T) {
 		CreatedAt:   createdDate,
 		UpdatedAt:   lastUpdate,
 		Schema:      schema,
-		Self:        self,
 		VirtualSize: 0,
 		Properties: map[string]interface{}{
 			"hw_disk_bus":       "scsi",
@@ -279,7 +266,6 @@ func TestUpdateImage(t *testing.T) {
 	createdDate := actualImage.CreatedAt
 	lastUpdate := actualImage.UpdatedAt
 	schema := "/v2/schemas/image"
-	self := "/v2/images/da3b75d9-3f4a-40e7-8a2c-bfab23927dea"
 
 	expectedImage := images.Image{
 		ID:         "da3b75d9-3f4a-40e7-8a2c-bfab23927dea",
@@ -305,7 +291,6 @@ func TestUpdateImage(t *testing.T) {
 		CreatedAt:       createdDate,
 		UpdatedAt:       lastUpdate,
 		Schema:          schema,
-		Self:            self,
 		VirtualSize:     0,
 		Properties: map[string]interface{}{
 			"hw_disk_bus":       "scsi",

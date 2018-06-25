@@ -45,7 +45,18 @@ func TestAuthenticatedClientV3(t *testing.T) {
 		w.Header().Add("X-Subject-Token", ID)
 
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprintf(w, `{ "token": { "expires_at": "2013-02-02T18:30:59.000000Z" } }`)
+		fmt.Fprintf(w, `
+			{
+				"token": {
+					"expires_at": "2013-02-02T18:30:59.000000Z",
+					"project": {
+						"id": "263fd9"
+					},
+					"user": {
+						"id": "0ca8f6"
+					}
+				}
+			}`)
 	})
 
 	options := gophercloud.AuthOptions{
@@ -58,6 +69,8 @@ func TestAuthenticatedClientV3(t *testing.T) {
 	client, err := openstack.AuthenticatedClient(options)
 	th.AssertNoErr(t, err)
 	th.CheckEquals(t, ID, client.TokenID)
+	th.CheckEquals(t, "263fd9", client.TenantID)
+	th.CheckEquals(t, "0ca8f6", client.UserID)
 }
 
 func TestAuthenticatedClientV2(t *testing.T) {

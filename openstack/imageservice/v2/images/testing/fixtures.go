@@ -152,9 +152,9 @@ func HandleImageListSuccessfully(t *testing.T) {
 		fmt.Fprintf(w, strings.Join(imageJSON, ","))
 
 		fmt.Fprintf(w, `],
-			    "next": "/v2/images?marker=%s&limit=%v",
-			    "schema": "/v2/schemas/images",
-			    "first": "/v2/images?limit=%v"}`, newMarker, limit, limit)
+			    "next": "/images?marker=%s&limit=%v",
+			    "schema": "/schemas/images",
+			    "first": "/images?limit=%v"}`, newMarker, limit, limit)
 
 	})
 }
@@ -197,7 +197,6 @@ func HandleImageCreationSuccessfully(t *testing.T) {
 			"size": 0,
 			"checksum": "",
 			"virtual_size": 0,
-			"architecture": "x86_64",
 			"hw_disk_bus": "scsi",
 			"hw_disk_bus_model": "virtio-scsi",
 			"hw_scsi_model": "virtio-scsi"

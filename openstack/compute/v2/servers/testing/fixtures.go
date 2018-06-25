@@ -380,7 +380,11 @@ const FaultyServerBody = `
 		"created": "2014-09-25T13:04:41Z",
 		"tenant_id": "fcad67a6189847c4aecfa3c81a05783b",
 		"OS-DCF:diskConfig": "MANUAL",
-		"os-extended-volumes:volumes_attached": [],
+		"os-extended-volumes:volumes_attached": [
+			{
+				"id": "289da7f8-6440-407c-9fb4-7db01ec49164"
+			}
+		],
 		"accessIPv4": "",
 		"accessIPv6": "",
 		"progress": 0,
