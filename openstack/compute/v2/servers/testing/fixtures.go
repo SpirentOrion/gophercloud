@@ -380,7 +380,11 @@ const FaultyServerBody = `
 		"created": "2014-09-25T13:04:41Z",
 		"tenant_id": "fcad67a6189847c4aecfa3c81a05783b",
 		"OS-DCF:diskConfig": "MANUAL",
-		"os-extended-volumes:volumes_attached": [],
+		"os-extended-volumes:volumes_attached": [
+			{
+				"id": "289da7f8-6440-407c-9fb4-7db01ec49164"
+			}
+		],
 		"accessIPv4": "",
 		"accessIPv6": "",
 		"progress": 0,
@@ -402,6 +406,10 @@ const ServerPasswordBody = `
     "password": "xlozO3wLCBRWAa2yDjCCVx8vwNPypxnypmRYDa/zErlQ+EzPe1S/Gz6nfmC52mOlOSCRuUOmG7kqqgejPof6M7bOezS387zjq4LSvvwp28zUknzy4YzfFGhnHAdai3TxUJ26pfQCYrq8UTzmKF2Bq8ioSEtVVzM0A96pDh8W2i7BOz6MdoiVyiev/I1K2LsuipfxSJR7Wdke4zNXJjHHP2RfYsVbZ/k9ANu+Nz4iIH8/7Cacud/pphH7EjrY6a4RZNrjQskrhKYed0YERpotyjYk1eDtRe72GrSiXteqCM4biaQ5w3ruS+AcX//PXk3uJ5kC7d67fPXaVz4WaQRYMg=="
 }
 `
+
+const ConsoleOutputBody = `{
+	"output": "abc"
+}`
 
 var (
 	herpTimeCreated, _ = time.Parse(time.RFC3339, "2014-09-25T13:10:02Z")
@@ -533,6 +541,8 @@ var (
 			},
 		},
 	}
+
+	ConsoleOutput = "abc"
 
 	merpTimeCreated, _ = time.Parse(time.RFC3339, "2014-09-25T13:04:41Z")
 	merpTimeUpdated, _ = time.Parse(time.RFC3339, "2014-09-25T13:04:49Z")
@@ -881,6 +891,19 @@ func HandleRebootSuccessfully(t *testing.T) {
 		th.TestJSONRequest(t, r, `{ "reboot": { "type": "SOFT" } }`)
 
 		w.WriteHeader(http.StatusAccepted)
+	})
+}
+
+// HandleShowConsoleOutputSuccessfully sets up the test server to respond to a os-getConsoleOutput request with success.
+func HandleShowConsoleOutputSuccessfully(t *testing.T, response string) {
+	th.Mux.HandleFunc("/servers/1234asdf/action", func(w http.ResponseWriter, r *http.Request) {
+		th.TestMethod(t, r, "POST")
+		th.TestHeader(t, r, "X-Auth-Token", client.TokenID)
+		th.TestJSONRequest(t, r, `{ "os-getConsoleOutput": { "length": 50 } }`)
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Add("Content-Type", "application/json")
+		fmt.Fprintf(w, response)
 	})
 }
 
