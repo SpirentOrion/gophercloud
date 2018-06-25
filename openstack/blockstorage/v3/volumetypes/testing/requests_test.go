@@ -45,7 +45,6 @@ func TestListAll(t *testing.T) {
 	})
 	th.AssertNoErr(t, err)
 	th.AssertEquals(t, pages, 1)
-
 }
 
 func TestGet(t *testing.T) {
@@ -62,4 +61,58 @@ func TestGet(t *testing.T) {
 	th.AssertEquals(t, v.ExtraSpecs["capabilities"], "gpu")
 	th.AssertEquals(t, v.QosSpecID, "d32019d3-bc6e-4319-9c1d-6722fc136a22")
 	th.AssertEquals(t, v.PublicAccess, true)
+}
+
+func TestCreate(t *testing.T) {
+	th.SetupHTTP()
+	defer th.TeardownHTTP()
+
+	MockCreateResponse(t)
+
+	var isPublic = true
+
+	options := &volumetypes.CreateOpts{
+		Name:        "test_type",
+		IsPublic:    &isPublic,
+		Description: "test_type_desc",
+		ExtraSpecs:  map[string]string{"capabilities": "gpu"},
+	}
+
+	n, err := volumetypes.Create(client.ServiceClient(), options).Extract()
+	th.AssertNoErr(t, err)
+
+	th.AssertEquals(t, n.Name, "test_type")
+	th.AssertEquals(t, n.Description, "test_type_desc")
+	th.AssertEquals(t, n.IsPublic, true)
+	th.AssertEquals(t, n.PublicAccess, true)
+	th.AssertEquals(t, n.ID, "6d0ff92a-0007-4780-9ece-acfe5876966a")
+	th.AssertEquals(t, n.ExtraSpecs["capabilities"], "gpu")
+}
+
+func TestDelete(t *testing.T) {
+	th.SetupHTTP()
+	defer th.TeardownHTTP()
+
+	MockDeleteResponse(t)
+
+	res := volumetypes.Delete(client.ServiceClient(), "d32019d3-bc6e-4319-9c1d-6722fc136a22")
+	th.AssertNoErr(t, res.Err)
+}
+
+func TestUpdate(t *testing.T) {
+	th.SetupHTTP()
+	defer th.TeardownHTTP()
+
+	MockUpdateResponse(t)
+
+	var isPublic = true
+	options := volumetypes.UpdateOpts{
+		Name:     "vol-type-002",
+		IsPublic: &isPublic,
+	}
+
+	v, err := volumetypes.Update(client.ServiceClient(), "d32019d3-bc6e-4319-9c1d-6722fc136a22", options).Extract()
+	th.AssertNoErr(t, err)
+	th.CheckEquals(t, "vol-type-002", v.Name)
+	th.CheckEquals(t, true, v.IsPublic)
 }

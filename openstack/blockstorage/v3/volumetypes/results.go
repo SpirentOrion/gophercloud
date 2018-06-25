@@ -77,3 +77,18 @@ func ExtractVolumeTypesInto(r pagination.Page, v interface{}) error {
 type GetResult struct {
 	commonResult
 }
+
+// CreateResult contains the response body and error from a Create request.
+type CreateResult struct {
+	commonResult
+}
+
+// DeleteResult contains the response body and error from a Delete request.
+type DeleteResult struct {
+	gophercloud.ErrResult
+}
+
+// UpdateResult contains the response body and error from an Update request.
+type UpdateResult struct {
+	commonResult
+}
